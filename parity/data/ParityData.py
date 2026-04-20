@@ -42,8 +42,10 @@ class Parity(Dataset):
         ##################################
         #  Q1
         ##################################
-        
-        #TODO
+        for item in batch:
+           xwithdiflengths =+ item[0]
+           ylist =+ item[1]
+        xx = batch
         
         return xx_pad, yy, x_lens
 
