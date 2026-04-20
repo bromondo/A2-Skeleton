@@ -42,11 +42,21 @@ class Parity(Dataset):
         ##################################
         #  Q1
         ##################################
+        xwithdiflengths = []
+        listofys = []
+        listofxlengths = []
         for item in batch:
-           xwithdiflengths =+ item[0]
-           ylist =+ item[1]
-        xx = batch
-        
+           xwithdiflengths.append(item[0])
+        xx_pad = pad_sequence(xwithdiflengths, batch_first=True).unsqueeze(-1)
+        for item in batch:
+           listofys.append(item[1])
+        yy = torch.stack(listofys).long()
+        print(yy)   
+
+        for xlen in xwithdiflengths:
+           listofxlengths.append(len(xlen))
+
+        x_lens = torch.LongTensor(listofxlengths)
         return xx_pad, yy, x_lens
 
 
