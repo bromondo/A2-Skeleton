@@ -110,7 +110,19 @@ class UDPOSDataset(Dataset):
     ##################################
     #  Q4
     ##################################
-    #TODO
+    xwithdiflengths = []
+    listofys = []
+    listofxlengths = []
+    for item in batch:
+        xwithdiflengths.append(item[0])
+    xx_pad = pad_sequence(xwithdiflengths, batch_first=True, padding_value=1)
+    for item in batch:
+        listofys.append(item[1])
+    yy_pad = pad_sequence(listofys, batch_first=True, padding_value=-1)
+    for xlen in xwithdiflengths:
+        listofxlengths.append(len(xlen))
+
+    lens = torch.LongTensor(listofxlengths)
     
     return xx_pad, yy_pad, lens
 
