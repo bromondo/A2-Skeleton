@@ -9,11 +9,17 @@ class PoSGRU(nn.Module) :
       super().__init__()
       self.hidden_dim = hidden_dim
       self.residual = residual
-      
+      self.embed = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embed_dim, padding_idx=1)
+      self.linear = nn.Linear(in_features=embed_dim,out_features=hidden_dim)
+      self.GRU = nn.GRU(input_size=hidden_dim,hidden_size=hidden_dim//2,num_layers=num_layers,bidirectional=True,batch_first=True)
+      self.classify = nn.Sequential(
+         nn.Linear(hidden_dim, hidden_dim),
+         nn.GELU(),
+         nn.Linear(hidden_dim, output_dim)
+      )
       ##################################
       #  Q5 / Q12
       ##################################
-      #TODO
   
 
     
