@@ -51,7 +51,6 @@ class Parity(Dataset):
         for item in batch:
            listofys.append(item[1])
         yy = torch.stack(listofys).long()
-        print(yy)   
 
         for xlen in xwithdiflengths:
            listofxlengths.append(len(xlen))

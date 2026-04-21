@@ -32,7 +32,7 @@ config = {
     "linear_warmup":10,
     "train_length":10,
     "eval_length":2500,
-    "hidden_dim":16
+    "hidden_dim":32
 }
 
 # Main Driver Loop
@@ -88,7 +88,7 @@ def train(model, train_loader):
   run_name = generateRunName()
 
   # Startup wandb logging
-  wandb.login()
+  wandb.login(key="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")
   wandb.init(project="[AI539] Parirty HW2", name=run_name, config=config)
 
   # Move model to the GPU
