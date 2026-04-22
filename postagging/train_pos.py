@@ -105,7 +105,7 @@ def train(model, train_loader, val_loader):
   ##################################
   #  Q7 
   ##################################
-  criterion = #TODO
+  criterion = nn.CrossEntropyLoss(ignore_index=-1)
 
   # Main training loop with progress bar
   iteration = 0
@@ -126,7 +126,7 @@ def train(model, train_loader, val_loader):
       ##################################
       #  Q7 / Q11
       ##################################
-      loss = #TODO
+      loss = criterion(out.reshape(-1, num_tags),y.reshape(-1))
 
       loss.backward()
       optimizer.step()
