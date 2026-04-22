@@ -96,8 +96,11 @@ def train(model, train_loader, val_loader):
   #  Q6
   ##################################
   # Set up optimizer and our learning rate schedulers
-  optimizer = #TODO
-  scheduler = #TODO
+  warmup_epochs = int(.1 * config["max_epoch"])
+  optimizer = AdamW(model.parameters(), lr=config["lr"], weight_decay=config["l2reg"])
+  linear = LinearLR(optimizer, start_factor=0.25, total_iters=warmup_epochs)
+  cosine = CosineAnnealingLR(optimizer, T_max = config["max_epoch"]-warmup_epochs)
+  scheduler = SequentialLR(optimizer, schedulers=[linear, cosine], milestones=[warmup_epochs])
 
   ##################################
   #  Q7 
