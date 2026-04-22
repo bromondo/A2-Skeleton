@@ -28,5 +28,11 @@ class PoSGRU(nn.Module) :
       ##################################
       #  Q5
       ##################################
-      #TODO
+      
+      em = self.embed(x)
+      ln = self.linear(em)
+      g, _= self.GRU(ln)
+      if self.residual:
+         g = g + ln
+      out = self.classify(g)
       return out
