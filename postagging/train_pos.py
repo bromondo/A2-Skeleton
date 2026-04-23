@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import pickle
 
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
@@ -109,6 +110,7 @@ def train(model, train_loader, val_loader):
 
   # Main training loop with progress bar
   iteration = 0
+  best_val_acc = 0.0
   pbar = tqdm(total=config["max_epoch"]*len(train_loader), desc="Training Iterations", unit="batch")
   for epoch in range(config["max_epoch"]):
     model.train()
@@ -126,7 +128,7 @@ def train(model, train_loader, val_loader):
       ##################################
       #  Q7 / Q11
       ##################################
-      loss = criterion(out.reshape(-1, num_tags),y.reshape(-1))
+      loss = criterion(out.reshape(-1, out.shape[-1]),y.reshape(-1))
 
       loss.backward()
       optimizer.step()
@@ -147,8 +149,11 @@ def train(model, train_loader, val_loader):
     ##################################
     #  Q8
     ##################################
-    #TODO
-
+    if val_acc > best_val_acc:
+      best_val_acc = val_acc
+      torch.save(model.state_dict(), f"./chkpts/{run_name}_model.pt")
+      with open(f"./chkpts/{run_name}_vocab.pkl", "wb") as f:
+        pickle.dump(train_loader.dataset.vocab, f)
     # Adjust LR
     scheduler.step()
 
@@ -160,7 +165,22 @@ def train(model, train_loader, val_loader):
 ##################################
 def evaluate(model, loader):
   model.eval()
-  #TODO
+  total_loss = 0.0
+  acc = 0.0
+  total_nonpad = 0.0
+  criterion = nn.CrossEntropyLoss(ignore_index=-1)
+  for x, y, lens in loader:
+    x = x.to(device)
+    y = y.to(device)
+    out = model(x)
+    loss = criterion(out.reshape(-1, out.shape[-1]),y.reshape(-1))
+    nonpad = (y != -1).to(dtype=float).sum().item()
+    acc += (torch.argmax(out, dim=2)==y).to(dtype=float).sum().item()
+    total_loss    += loss.item() * nonpad
+    total_nonpad  += nonpad
+  val_loss = total_loss / total_nonpad
+  val_acc  = acc / total_nonpad
+
   return val_loss, val_acc
 
 def generateRunName():
