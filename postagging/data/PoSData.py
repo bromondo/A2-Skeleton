@@ -78,7 +78,7 @@ class UDPOSDataset(Dataset):
     x = []
     y = []
     filename = "./data/UDPOS/en-ud-tag.v2."+split+".txt"
-    with open(filename, "r") as f:  
+    with open(filename, "r", encoding="utf-8") as f:
       for line in f:
         if line == "\n":
           data.append( (x,y) )

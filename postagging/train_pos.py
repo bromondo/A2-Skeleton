@@ -57,7 +57,8 @@ def main():
     
     #Iterate through vocab words and copy over glove vectors when possible
     for i,w in vocab.idx2word.items():
-      #TODO
+      pass
+    #TODO
   else:
     embed_init = None
 
@@ -87,7 +88,7 @@ def train(model, train_loader, val_loader):
   run_name = generateRunName()
 
   # Startup wandb logging
-  wandb.login()
+  wandb.login(key="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")
   wandb.init(project="[AI539] UDPOS HW2", name=run_name, config=config)
 
   # Move model to the GPU
@@ -138,8 +139,8 @@ def train(model, train_loader, val_loader):
       
       nonpad = (y != -1).to(dtype=float).sum().item()
       acc = (torch.argmax(out, dim=2)==y).to(dtype=float).sum() / nonpad
-
-      wandb.log({"Loss/train": loss.item(), "Acc/train": acc.item(), "Grad/norm":grad_norm_words.item()}, step=iteration)
+      # , "Grad/norm":grad_norm_words.item()
+      wandb.log({"Loss/train": loss.item(), "Acc/train": acc.item()}, step=iteration)
       pbar.update(1)
       iteration+=1
 
@@ -191,4 +192,5 @@ def generateRunName():
 
 
 
-main()
+if __name__== "__main__":
+    main()
