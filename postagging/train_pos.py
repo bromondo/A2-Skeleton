@@ -33,7 +33,7 @@ config = {
     "embed_dim":100,
     "hidden_dim":256,
     "residual":True,
-    "use_glove":False
+    "use_glove":True
 }
 
 
@@ -52,13 +52,19 @@ def main():
   # Preload GloVE vectors
   if config['use_glove']:
     glove_wv = gensim.downloader.load('glove-wiki-gigaword-100')
-    #TODO
+    embed_init = torch.randn(vocab_size, 100)
+    Wordsnotinlist = []
     #Create vocab_size x embed_size tensor to initialize embedding
     
     #Iterate through vocab words and copy over glove vectors when possible
     for i,w in vocab.idx2word.items():
-      pass
-    #TODO
+      if w in glove_wv:
+        embed_init[i] = torch.from_numpy(glove_wv[w].copy())
+      else:
+        Wordsnotinlist.append(w)
+    print(f"number of words: {len(Wordsnotinlist)} of {vocab_size}")
+    print("Examples:", Wordsnotinlist[:5])
+    
   else:
     embed_init = None
 
