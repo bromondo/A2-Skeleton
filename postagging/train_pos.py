@@ -29,10 +29,10 @@ config = {
     "lr":0.0005, # learning rate
     "l2reg":0.0000001, # weight decay
     "max_epoch":30,
-    "layers": 25,
+    "layers": 2,
     "embed_dim":100,
     "hidden_dim":256,
-    "residual":False,
+    "residual":True,
     "use_glove":False
 }
 
