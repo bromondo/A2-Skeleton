@@ -33,3 +33,10 @@ model.eval()
 
 with torch.no_grad():
     out = model(Tensornumberedwords)
+
+listoflabels = torch.argmax(out, dim=-1).squeeze(0).tolist()
+
+labels = vocab.denumeralizeLabels(listoflabels)
+
+for w, t in zip(words, labels):
+    print(f"{w}: {t}")
