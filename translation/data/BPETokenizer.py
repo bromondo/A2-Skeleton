@@ -47,23 +47,45 @@ class BPETokenizer:
         Count every adjacent id-pair across all word-types, weighted by
         word frequency.  O(V * avg_word_len) where V = unique word-types.
         """
+        dictionary = defaultdict(int)
+        for word, freq in word_freqs.items():
+            for pair in zip(word, word[1:]):
+                dictionary[pair] += freq
         
+
+        return dictionary
         ##################################
         #  Q14
         ##################################
 
-        #TODO
 
 
     @staticmethod
     def _apply_merge(ids: list[int], a: int, b: int, new_id: int) -> list[int]:
         """Replace every (a, b) occurrence in *ids* with *new_id*."""
         
+        result = []
+        i = 0
+
+        while i < len(ids):
+            if i < (len(ids) - 1) and ids[i] == a and ids[i+1] == b:
+                result.append(new_id)
+                i +=2
+            else:
+                result.append(ids[i])
+                i += 1
+        
+        return result
+
+
+
+
+
         ##################################
         #  Q14
         ##################################
 
-        #TODO
+
 
    
     # ------------------------------------------------------------------
