@@ -29,10 +29,10 @@ config = {
     "lr":0.0005, # learning rate
     "l2reg":0.0000001, # weight decay
     "max_epoch":30,
-    "layers": 2,
+    "layers": 25,
     "embed_dim":100,
     "hidden_dim":256,
-    "residual":True,
+    "residual":False,
     "use_glove":False
 }
 
@@ -132,6 +132,7 @@ def train(model, train_loader, val_loader):
       loss = criterion(out.reshape(-1, out.shape[-1]),y.reshape(-1))
 
       loss.backward()
+      grad_norm_words = model.embed.weight.grad.norm()
       optimizer.step()
       optimizer.zero_grad()
 
@@ -139,8 +140,7 @@ def train(model, train_loader, val_loader):
       
       nonpad = (y != -1).to(dtype=float).sum().item()
       acc = (torch.argmax(out, dim=2)==y).to(dtype=float).sum() / nonpad
-      # , "Grad/norm":grad_norm_words.item()
-      wandb.log({"Loss/train": loss.item(), "Acc/train": acc.item()}, step=iteration)
+      wandb.log({"Loss/train": loss.item(), "Acc/train": acc.item(), "Grad/norm":grad_norm_words.item()}, step=iteration)
       pbar.update(1)
       iteration+=1
 
