@@ -12,8 +12,11 @@ class DotProductAttention(nn.Module):
         ##################################
         #  Q17
         ##################################
-
-        #TODO
+        self.q_proj = nn.Linear(q_input_dim, kq_dim)
+        self.k_proj = nn.Linear(cand_input_dim, kq_dim)
+        self.v_proj = nn.Linear(cand_input_dim, v_dim)
+        self.kq_dim = kq_dim
+        
 
     #hidden  is h_t^{d} from Eq. (11)  and has  dim => [batch_size , dec_hid_dim]
     #encoder_outputs  is the  word  representations  from Eq. (6)
@@ -22,9 +25,14 @@ class DotProductAttention(nn.Module):
         ##################################
         #  Q17
         ##################################
-
-        #TODO
-
+        Q = self.q_proj(hidden)
+        K = self.k_proj(encoder_outputs)
+        V = self.v_proj(encoder_outputs)
+        scores = torch.bmm(Q.unsqueeze(1), K.permute(0, 2, 1))              
+        scores = scores / math.sqrt(self.kq_dim)
+        alpha = F.softmax(scores.squeeze(1), dim=-1)
+        attended_val = torch.bmm(alpha.unsqueeze(1), V)
+        attended_val = attended_val.squeeze(1)
         return attended_val, alpha
 
 
