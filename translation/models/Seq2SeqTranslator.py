@@ -82,24 +82,30 @@ class BidirectionalEncoder(nn.Module):
 class Decoder(nn.Module):
     def __init__(self, trg_vocab_len, emb_dim, dec_hid_dim, attention, dropout=0.5):
         super().__init__()
-
+        self.embed = nn.Embedding(trg_vocab_len, emb_dim)
+        self.dropout = nn.Dropout(dropout)
         self.attention = attention
+        self.GRU = nn.GRU(input_size=emb_dim,hidden_size=dec_hid_dim,num_layers=1,batch_first=True)
+        self.classifier = nn.Sequential(nn.Linear(dec_hid_dim, dec_hid_dim), nn.GELU(), nn.Linear(dec_hid_dim, trg_vocab_len),)
 
         ##################################
         #  Q16
         ##################################
-
-        #TODO
 
     def forward(self, input, hidden, encoder_outputs):
         ##################################
         #  Q16
         ##################################
-
-        #TODO
-
+        em = self.dropout(self.embed(input))
+        em = em.unsqueeze(1)
+        hidden = hidden.unsqueeze(0)
+        _, h = self.gru(em, hidden)
+        h = h.squeeze(0)
+        attended_feature, alphas = self.attention(h, encoder_outputs)
+        new_hidden = h + attended_feature
+        out = self.classifier(new_hidden)
         #Output prediction (scores for each word), the updated hidden state, and the attention map (for visualization)
-        return hidden, out, alphas
+        return new_hidden, out, alphas
 
 class Seq2Seq(nn.Module):
     def __init__(self, src_vocab_size, trg_vocab_size, embed_dim, enc_hidden_dim, dec_hidden_dim, kq_dim, attention, dropout=0.5):
