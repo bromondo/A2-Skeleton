@@ -61,15 +61,22 @@ class BidirectionalEncoder(nn.Module):
         ##################################
         #  Q15
         ##################################
-
-        #TODO
+        self.embed = nn.Embedding(src_vocab_len, emb_dim)
+        self.dropout = nn.Dropout(dropout)
+        self.GRU = nn.GRU(input_size=emb_dim,hidden_size=enc_hid_dim,num_layers=1,bidirectional=True,batch_first=True)
+        self.enc_hid_dim = enc_hid_dim
+        
 
     def forward(self, src, src_lens):
         ##################################
         #  Q15
         ##################################
-
-        #TODO
+        em = self.dropout(self.embed(src))
+        word_representations, _ = self.GRU(em)
+        lastforward = word_representations[torch.arange(src.shape[0],device=src.device),src_lens - 1,:self.enc_hid_dim]
+        firstbackward = word_representations[:, 0, self.enc_hid_dim:]
+        sentence_cat = torch.cat([lastforward,firstbackward], dim=-1)
+        return word_representations, sentence_cat
 
 
 class Decoder(nn.Module):
