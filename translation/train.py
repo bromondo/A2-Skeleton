@@ -66,7 +66,7 @@ def train(model, train_loader, val_loader, vocabs):
   run_name = generateRunName()
 
   # Startup wandb logging
-  wandb.login(key="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")
+  wandb.login()
   wandb.init(project="Multi30K AI539 A2", name=run_name, config=config)
 
   # Move model to the GPU

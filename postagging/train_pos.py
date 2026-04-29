@@ -94,7 +94,7 @@ def train(model, train_loader, val_loader):
   run_name = generateRunName()
 
   # Startup wandb logging
-  wandb.login(key="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")
+  wandb.login()
   wandb.init(project="[AI539] UDPOS HW2", name=run_name, config=config)
 
   # Move model to the GPU
