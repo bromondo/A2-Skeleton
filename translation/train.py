@@ -33,7 +33,7 @@ config = {
     "dec_dim":256,
     "kq_dim":64,
     "attn": "dotproduct", #Options are none, mean, dotproduct
-    "dropout":0.0,
+    "dropout":0.5,
     "max_merges":7500
 }
 
